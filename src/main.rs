@@ -44,6 +44,12 @@ fn main() {
                 .help("Only list file names."),
         )
         .arg(
+            Arg::with_name("all")
+                .short("a")
+                .long("all")
+                .help("Show all contents without limits."),
+        )
+        .arg(
             Arg::with_name("noindex")
                 .short("n")
                 .long("no-index")
@@ -83,6 +89,7 @@ fn main() {
             err_exit("Arg 'COUNT' expect number input but got chars.");
             return 0; // a lie to compiler
         });
+    let showall = parser.is_present("all");
     let shortlist = parser.is_present("short");
     let notshowindex = parser.is_present("noindex");
     let mut usetimeago = true;
@@ -116,7 +123,7 @@ fn main() {
     let mut i = 0;
     for path in paths.iter().rev() {
         i += 1;
-        if i > count {
+        if !showall && i > count {
             break;
         }
         let dt = Local.timestamp(
